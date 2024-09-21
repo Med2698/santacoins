@@ -1,5 +1,5 @@
 [build]
-  base = "santacoins"
+  base = "/"
   publish = "index.html"  # or wherever the built files are stored
   functions = "netlify/functions"
 
