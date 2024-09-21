@@ -9,7 +9,7 @@ exports.handler = async function (event, context) {
   // Respond to /start command
   let responseMessage = "🎅 Welcome to Santa Airdrop!";
   if (message === '/start') {
-    responseMessage = '🎮 Play the game here:https://superb-arithmetic-fa7c53.netlify.app/';
+    responseMessage = '🎮 Play the game herehttps://main--santacoins.netlify.app/';
   }
 
   // Send a message back to the user via Telegram Bot API
