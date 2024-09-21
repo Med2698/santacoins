@@ -1,4 +1,4 @@
-const fetch =import('node-fetch');
+const fetch =importe('node-fetch');
 
 exports.handler = async function (event, context) {
   const body = JSON.parse(event.body); // Parse the incoming Telegram update
