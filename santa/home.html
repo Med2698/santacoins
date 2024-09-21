@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Falling Candies Game</title>
+  <link rel="stylesheet" href="styles.css"> <!-- Link to your styles.css -->
+  <style>
+    /* Style for the result and button */
+    #result-container {
+      display: none;
+      text-align: center;
+      font-size: 24px;
+      color: white;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    #continue-button {
+      display: none;
+      position: absolute;
+      top: 60%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      padding: 10px 20px;
+      font-size: 18px;
+      background-color: #ff4d4d;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    #continue-button:hover {
+      background-color: #ff3333;
+    }
+
+    /* Candy falling container */
+    #snow-container {
+      position: relative;
+      width: 100%;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    .candy {
+      position: absolute;
+      font-size: 30px;
+      top: -50px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div class="background">
+    <!-- Timer display -->
+    <div id="timer">00:60</div>
+    <!-- Candy collection counter -->
+    <div id="counter">🍬 0</div>
+    <!-- Candy container for generating candies -->
+    <div id="snow-container"></div>
+    <!-- Result container for final score, hidden initially -->
+    <div id="result-container">You collected <span id="final-score">0</span> 🍬</div>
+    <!-- Continue button, hidden initially -->
+    <button id="continue-button" onclick="goHome()">Continue</button>
+  </div>
+
+  <script>
+    let gameScore = 0; // Initialize the game score
+    let timeLeft = 60; // Set the game timer to 60 seconds
+    const timerElement = document.getElementById('timer');
+    const counterElement = document.getElementById('counter');
+    const resultContainer = document.getElementById('result-container');
+    const continueButton = document.getElementById('continue-button');
+    const snowContainer = document.getElementById('snow-container');
+    let candyFallIntervals = []; // Keep track of individual candy fall intervals
+    let candyInterval;
+
+    // Start the game timer
+    function startTimer() {
+      const interval = setInterval(() => {
+        timeLeft--;
+        timerElement.textContent = `00:${timeLeft < 10 ? '0' : ''}${timeLeft}`;
+
+        if (timeLeft <= 0) {
+          clearInterval(interval);
+          endGame(); // End the game when time runs out
+        }
+      }, 1000);
+    }
+
+    // Function to update the score when a candy is clicked
+    function updateScore() {
+      gameScore++;
+      counterElement.textContent = `🍬 ${gameScore}`;
+    }
+
+    // Function to generate falling candies with increased density
+    function generateCandy() {
+      const candyCount = 2; // Double the density by generating two candies each time
+
+      for (let i = 0; i < candyCount; i++) {
+        const candy = document.createElement('div');
+        candy.classList.add('candy');
+        candy.textContent = '🍬';
+        candy.style.left = Math.random() * (window.innerWidth - 50) + 'px'; // Random horizontal position
+        snowContainer.appendChild(candy);
+
+        let candyFallSpeed = (Math.random() * 2 + 1) * 2; // Random speed for falling, increased by 30%
+
+        const fallInterval = setInterval(() => {
+          let candyTop = parseFloat(window.getComputedStyle(candy).getPropertyValue('top'));
+          candy.style.top = (candyTop + candyFallSpeed) + 'px';
+
+          if (candyTop > window.innerHeight) {
+            clearInterval(fallInterval);
+            snowContainer.removeChild(candy); // Remove candy once it goes off screen
+          }
+        }, 20);
+
+        candyFallIntervals.push(fallInterval); // Store each candy's interval
+
+        // Add event listener to update the score when candy is clicked
+        candy.addEventListener('click', function () {
+          updateScore();
+          clearInterval(fallInterval);
+          snowContainer.removeChild(candy); // Remove candy after it's clicked
+        });
+      }
+    }
+
+    // Function to end the game and display the final score
+    function endGame() {
+      // Hide the timer and candy counter
+      timerElement.style.display = 'none';
+      counterElement.style.display = 'none';
+
+      // Stop generating candies and clear existing candies
+      clearInterval(candyInterval);
+      snowContainer.innerHTML = ''; // Remove all remaining candies from the screen
+
+      // Clear all individual candy fall intervals
+      candyFallIntervals.forEach(clearInterval);
+
+      // Show the result and continue button
+      resultContainer.style.display = 'block';
+      continueButton.style.display = 'block';
+
+      // Display the final score
+      document.getElementById('final-score').textContent = gameScore;
+
+      // Save the game score to localStorage and update the total score
+      const previousScore = parseInt(localStorage.getItem('userScore') || '0');
+      const newTotalScore = previousScore + gameScore;
+      localStorage.setItem('userScore', newTotalScore); // Save the new total score
+    }
+
+    // Function to redirect the user back to the home page
+    function goHome() {
+      window.location.href = 'index.html'; // Go back to the home page
+    }
+
+    // Start generating candies at random intervals
+    function startCandyFall() {
+      candyInterval = setInterval(generateCandy, 250); // Double the frequency to 250ms (was 500ms before)
+    }
+
+    // Start the game timer and candy fall when the page loads
+    window.onload = function () {
+      startTimer();
+      startCandyFall();
+    };
+  </script>
+</body>
+</html>
+ 
+

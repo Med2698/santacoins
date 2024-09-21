@@ -1,0 +1,15 @@
+[build]
+  base = "santa"
+  publish = "index.html"  # or wherever the built files are stored
+  functions = "netlify/functions"
+
+[build.environment]
+  NODE_VERSION = "18.0.0"  # Example of specifying node version
+
+[functions]
+  directory = "netlify/functions"
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
