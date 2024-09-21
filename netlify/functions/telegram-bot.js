@@ -1,10 +1,10 @@
-const fetch = require('node-fetch');
+const fetch =require('node-fetch');
 
 exports.handler = async function (event, context) {
   const body = JSON.parse(event.body); // Parse the incoming Telegram update
   const chatId = body.message.chat.id; // Get the user's chat ID
   const message = body.message.text;   // Get the user's message text
-  const telegramToken = process.env.TELEGRAM_BOT_TOKEN; // Fetch the Telegram bot token from environment variables
+  const telegramToken = process.env.7547971806:AAHQkbgM4CPf5J4NfDgIOxlH1iC9DBKMfKc; // Fetch the Telegram bot token from environment variables
 
   // Respond to /start command
   let responseMessage = "🎅 Welcome to Santa Airdrop!";
