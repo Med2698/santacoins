@@ -1,6 +1,6 @@
 [build]
   base = "santa"
-  publish = "index.html"  # or wherever the built files are stored
+  publish = "santa/index.html"  # or wherever the built files are stored
   functions = "netlify/functions"
 
 [build.environment]
