@@ -1,6 +1,7 @@
-const fetch = require('node-fetch'); // Use require for CommonJS environments
-
 exports.handler = async function (event, context) {
+  // Dynamically import node-fetch
+  const fetch = (await import('node-fetch')).default;
+
   let body;
   try {
     body = JSON.parse(event.body); // Attempt to parse the body
@@ -56,3 +57,4 @@ exports.handler = async function (event, context) {
     };
   }
 };
+
