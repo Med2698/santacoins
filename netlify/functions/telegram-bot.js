@@ -1,4 +1,4 @@
-const fetch = (await import('node-fetch')).default;
+const fetch = require('node-fetch'); // Use require for CommonJS environments
 
 exports.handler = async function (event, context) {
   let body;
