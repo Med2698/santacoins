@@ -1,6 +1,6 @@
-const fetch = require('node-fetch');
-
 exports.handler = async function (event) {
+  const fetch = (await import('node-fetch')).default; // Dynamically import node-fetch
+
   try {
     const body = JSON.parse(event.body); // Parse incoming Telegram update
     const chatId = body.message?.chat.id || body.callback_query?.message.chat.id; // Get chat ID
