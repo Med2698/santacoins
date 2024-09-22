@@ -1,6 +1,6 @@
 exports.handler = async function (event, context) {
   try {
-    const fetch = (await import('node-fetch')).default; // Dynamically import node-fetch
+    const fetch = (await import('node-fetch')).default; // Dynamic import for node-fetch
 
     const body = JSON.parse(event.body); // Parse the incoming Telegram update
     const chatId = body.message.chat.id; // Get the user's chat ID
