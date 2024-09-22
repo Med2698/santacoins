@@ -1,61 +1,40 @@
-exports.handler = async function (event) {
-  const fetch = (await import('node-fetch')).default; // Dynamically import node-fetch
+exports.handler = async function (event, context) {
+  console.log("Received event: ", event.body);  // Log the event to see what Telegram sends
 
   try {
-    const body = JSON.parse(event.body); // Parse incoming Telegram update
-    const chatId = body.message?.chat.id || body.callback_query?.message.chat.id; // Get chat ID
-    const message = body.message?.text; // Get user's message
-    const callbackData = body.callback_query?.data; // For inline button callbacks
-    const telegramToken = process.env.TELEGRAM_BOT_TOKEN;
+    const body = JSON.parse(event.body); // Parse the incoming Telegram update
+    const chatId = body.message.chat.id; // Get the user's chat ID
+    const message = body.message.text;   // Get the user's message text
+    const telegramToken = process.env.TELEGRAM_BOT_TOKEN; // Fetch the Telegram bot token from environment variables
 
-    // Handle /start command
+    // Respond to /start command
+    let responseMessage = "🎅 Welcome to Santa Airdrop!";
     if (message === '/start') {
-      // Send a GIF with inline button
-      await fetch(`https://api.telegram.org/bot${telegramToken}/sendAnimation`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          chat_id: chatId,
-          animation: 'https://example.com/your-animation-url.gif', // Replace with your GIF URL
-          caption: '🎅 Welcome to Santa Airdrop!\n\nFarm Santa Coins, trade, and connect!\nMade by the Santa Team 🎁',
-          reply_markup: {
-            inline_keyboard: [
-              [
-                { text: 'Launch Santa Game', url: 'https://main--santacoins.netlify.app/' }
-              ]
-            ]
-          }
-        }),
-      });
+      responseMessage = '🎮 Play the game here: https://main--santacoins.netlify.app/';
     }
 
-    // Handle callback button press
-    if (callbackData === 'launch_game') {
-      await fetch(`https://api.telegram.org/bot${telegramToken}/sendMessage`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          chat_id: chatId,
-          text: '🎮 Play the game here: https://main--santacoins.netlify.app/',
-        }),
-      });
-    }
+    // Send a message back to the user via Telegram Bot API
+    await fetch(`https://api.telegram.org/bot${telegramToken}/sendMessage`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        chat_id: chatId,
+        text: responseMessage,
+      }),
+    });
 
-    // Return success
+    // Respond with a success status
     return {
       statusCode: 200,
-      body: JSON.stringify({ message: 'Message processed successfully!' }),
+      body: JSON.stringify({ message: 'Message sent successfully!' }),
     };
   } catch (error) {
-    // Log any errors and return failure
-    console.error('Error handling request:', error);
+    console.error("Error processing the event: ", error);
     return {
       statusCode: 500,
-      body: JSON.stringify({ error: 'Internal Server Error' }),
+      body: JSON.stringify({ error: 'Something went wrong!' }),
     };
   }
 };
